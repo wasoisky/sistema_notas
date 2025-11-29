@@ -1,0 +1,73 @@
+{% extends "base.html" %}  
+{% load my_custom_filters %}
+
+{% block title %}Listado de Estudiantes{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Listado de Estudiantes</h1>
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        
+        <a href="{% url 'agregar_estudiante' %}" class="btn btn-primary">➕ Agregar Estudiante</a>
+        
+        <a href="{% url 'listar_estudiantes' %}" class="btn btn-secondary {% if not filtro_activo and not orden_activo %}active{% endif %}">Mostrar Todos</a>
+        
+        <a href="{% url 'listar_estudiantes' %}?sexo=M{% if orden_activo %}&orden={{ orden_activo }}{% endif %}" 
+           class="btn btn-info {% if filtro_activo == 'M' %}active{% endif %}">Sexo Masculino (M)</a>
+        
+        <a href="{% url 'listar_estudiantes' %}?sexo=F{% if orden_activo %}&orden={{ orden_activo }}{% endif %}" 
+           class="btn btn-info {% if filtro_activo == 'F' %}active{% endif %}">Sexo Femenino (F)</a>
+        
+        <div class="vr"></div> 
+        
+        <a href="{% url 'listar_estudiantes' %}?orden=mayor{% if filtro_activo %}&sexo={{ filtro_activo }}{% endif %}" 
+           class="btn btn-warning text-dark {% if orden_activo == 'mayor' %}active{% endif %}">Mayor a Menor</a>
+        
+        <a href="{% url 'listar_estudiantes' %}?orden=menor{% if filtro_activo %}&sexo={{ filtro_activo }}{% endif %}" 
+           class="btn btn-warning text-dark {% if orden_activo == 'menor' %}active{% endif %}">Menor a Mayor</a>
+
+        <button class="btn btn-light border">📊 Estadísticas</button>
+    </div>
+
+    {% if estudiantes %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre Completo</th>
+                        <th>Sexo</th>
+                        <th class="text-center">Nota Final</th> 
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for estudiante in estudiantes %}
+                    <tr>
+                        <td>{{ estudiante.codigo }}</td>
+                        <td>{{ estudiante.nombre }} {{ estudiante.apellido }}</td>
+                        <td>{{ estudiante.sexo }}</td> 
+                        
+                        <td class="text-center">
+                            {% with nota=estudiante.nota_final %}
+                                <span class="badge bg-{% if nota >= 3.0 %}success{% else %}danger{% endif %} fs-6">
+                                    {{ nota|floatformat:2 }}
+                                </span>
+                            {% endwith %}
+                        </td>
+                        
+                        <td class="text-center">
+                            <a href="{% url 'editar_estudiante' codigo=estudiante.codigo %}" class="btn btn-sm btn-info me-1">✏️ Editar</a>
+                            <a href="{% url 'eliminar_estudiante' codigo=estudiante.codigo %}" class="btn btn-sm btn-danger">❌ Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No hay estudiantes registrados que cumplan con los filtros.
+        </div>
+    {% endif %}
+{% endblock %}

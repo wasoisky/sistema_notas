@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Ingresar Nota Individual{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">📝 Ingresar Nota Individual</h1>
+
+    <form method="post" action="." class="card p-4 shadow-sm">
+        {% csrf_token %} 
+        
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="{{ form.estudiante.id_for_label }}" class="form-label">Estudiante</label>
+                {{ form.estudiante }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.materia.id_for_label }}" class="form-label">Materia</label>
+                {{ form.materia }}
+            </div>
+            <div class="col-12">
+                <label for="{{ form.corte.id_for_label }}" class="form-label">Corte</label>
+                {{ form.corte }}
+            </div>
+            <div class="col-12">
+                <label for="{{ form.nota_valor.id_for_label }}" class="form-label">Valor de la Nota (0.00 a 5.00)</label>
+                {{ form.nota_valor }}
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-success mt-4 w-100">Guardar y Calcular Nota Final</button>
+    </form>
+
+    <p class="mt-3 text-center">
+        <a href="{% url 'listar_estudiantes' %}" class="btn btn-outline-secondary">Volver al Inicio</a>
+    </p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aplica clases de Bootstrap a los select y inputs del formulario
+            document.querySelectorAll('form select, form input[type="number"]').forEach(function(element) {
+                element.classList.add('form-select', 'form-control');
+            });
+        });
+    </script>
+{% endblock %}
